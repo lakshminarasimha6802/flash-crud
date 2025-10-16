@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0">Tasks</h3>
+  <div class="btn-group">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary {% if active=='all' %}active{% endif %}">All</a>
+    <a href="{{ url_for('index', status='todo') }}" class="btn btn-outline-secondary {% if active=='todo' %}active{% endif %}">Todo</a>
+    <a href="{{ url_for('index', status='doing') }}" class="btn btn-outline-secondary {% if active=='doing' %}active{% endif %}">Doing</a>
+    <a href="{{ url_for('index', status='done') }}" class="btn btn-outline-secondary {% if active=='done' %}active{% endif %}">Done</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% for t in tasks %}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <span class="badge bg-secondary text-uppercase">{{ t.status }}</span>
+        <h5 class="card-title mt-2">{{ t.title }}</h5>
+        <p class="card-text text-muted" style="white-space: pre-wrap;">{{ t.description or '' }}</p>
+        <form method="post" action="{{ url_for('delete', task_id=t.id) }}" onsubmit="return confirm('Delete this task?');">
+          <a class="btn btn-sm btn-outline-primary" href="{{ url_for('edit', task_id=t.id) }}">Edit</a>
+          <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+        </form>
+      </div>
+      <div class="card-footer small text-muted">
+        Created: {{ t.created_at.strftime('%Y-%m-%d %H:%M') }}
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+    <div class="alert alert-info">No tasks yet. Create one!</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
